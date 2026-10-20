@@ -23,25 +23,25 @@ namespace Solution
             if (redoStack.Count > 0)
             {
                 redoStack.Clear();
-                Debug.Log("Stack Cleared");
+                Debug.Log("stack cleared.");
             }
             // (optional optimization, but good practice for movement)
+
         }
         /// Reverts the player's state to the previous one using the undo stack.
         /// </summary>
         public void UndoLastMove(OOPPlayer player)
         {
-            if (undoStack.Count <= 1 )
+            if (undoStack.Count <= 1)
             {
                 return;
             }
             // Need at least two states: the current one, and the one to revert to.
-            Vector2 currentState = undoStack.Pop(); // Remove the current state
-            redoStack.Push(currentState); // Save it to the redo stack
+            Vector2 currentState = undoStack.Pop();
+            redoStack.Push(currentState);
 
-            Vector2 previousState = undoStack.Peek(); // Look at the previous state without removing it
-            player.UpdatePosition((int)previousState.x, (int)previousState.y); // Revert to the previous state
-
+            Vector2 previousState = undoStack.Peek();
+            player.UpdatePosition((int)previousState.x, (int)previousState.y);
         }
         public void RedoLastMove(OOPPlayer player)
         {
@@ -50,11 +50,11 @@ namespace Solution
             {
                 return;
             }
+            Vector2 stateToRedo = redoStack.Pop();
+            undoStack.Push(stateToRedo);
+            Debug.Log("Redo" + stateToRedo);
 
-            Vector2 statusToRedo = redoStack.Pop(); // Remove the current state
-            undoStack.Push(statusToRedo); // Save it to the redo stack
-
-            player.UpdatePosition((int)statusToRedo.x, (int)statusToRedo.y); // Revert to the previous state
+            player.UpdatePosition((int)stateToRedo.x, (int)stateToRedo.y);
 
         }
         #endregion
@@ -65,13 +65,13 @@ namespace Solution
         {
             //create a sample sequence of moves
             // 1. prepare the Queue with the sequence of moves
-            Vector2[] moves =
-            {
+            Vector2[] moves = {
                 Vector2.right,
                 Vector2.right,
                 Vector2.up,
                 Vector2.left,
-                Vector2.down
+                Vector2.up,
+                Vector2.down,
             };
 
             foreach (Vector2 move in moves)
@@ -87,6 +87,7 @@ namespace Solution
             Debug.Log($"Auto-move sequence started with {autoMoveQueue.Count} steps.");
 
             // 2. process the Queue step-by-step
+
             while (autoMoveQueue.Count > 0)
             {
                 Vector2 nextDirection = autoMoveQueue.Dequeue();
